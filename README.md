@@ -1,4 +1,4 @@
-# ai-agent
+# Medina-ai-agent
 
 Embeddable chat widget for **MidenMultiSig** — a floating, draggable chat bubble that talks to a single backend endpoint, renders replies, and surfaces suggested actions back to the host app.
 
