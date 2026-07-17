@@ -1,0 +1,463 @@
+/*
+ * Theme scoped entirely under .miden-chat-theme so it can never leak into or
+ * collide with the host page's own styles. Every custom property is prefixed
+ * for the same reason. Override any --miden-chat-* variable on your own
+ * wrapper to retheme without touching these rules.
+ */
+
+.miden-chat-theme {
+  --miden-chat-accent: #e8632a;
+  --miden-chat-accent-soft: #fdeee6;
+  --miden-chat-accent-hover: #d2551e;
+  --miden-chat-bg: #ffffff;
+  --miden-chat-ink: #1a1a1a;
+  --miden-chat-ink-soft: #6b6b6b;
+  --miden-chat-ink-faint: #9a9a9a;
+  --miden-chat-line: #ececec;
+  --miden-chat-line-strong: #e0e0e0;
+  --miden-chat-user-bubble: #f5f5f4;
+  --miden-chat-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+
+  font-family: var(--miden-chat-sans);
+  color: var(--miden-chat-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+.miden-chat-theme,
+.miden-chat-theme *,
+.miden-chat-theme *::before,
+.miden-chat-theme *::after {
+  box-sizing: border-box;
+}
+
+.miden-chat-theme button,
+.miden-chat-theme input,
+.miden-chat-theme textarea {
+  font-family: inherit;
+  color: inherit;
+}
+
+/* ---- Panel shell ---- */
+
+.miden-chat-widget {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: var(--miden-chat-bg);
+}
+
+/* ---- Header ---- */
+
+.miden-chat-header {
+  flex: 0 0 auto;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--miden-chat-line);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.miden-chat-header-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--miden-chat-accent-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.miden-chat-header-mark-icon {
+  width: 18px;
+  height: 18px;
+  stroke: var(--miden-chat-accent);
+}
+
+.miden-chat-header-title {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.miden-chat-header-title h1 {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.miden-chat-header-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--miden-chat-ink-faint);
+  flex-shrink: 0;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.miden-chat-header-close:hover {
+  background: #f4f4f3;
+  color: var(--miden-chat-ink);
+}
+
+.miden-chat-header-close-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* ---- Messages ---- */
+
+.miden-chat-message-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  scrollbar-width: thin;
+  scrollbar-color: #e4e4e3 transparent;
+}
+
+.miden-chat-message-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.miden-chat-message-list::-webkit-scrollbar-thumb {
+  background: #e4e4e3;
+  border-radius: 3px;
+}
+
+.miden-chat-message {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 82%;
+}
+
+.miden-chat-message--user {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.miden-chat-message--assistant {
+  align-self: flex-start;
+}
+
+.miden-chat-message-content {
+  padding: 10px 13px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  border-radius: 14px;
+  white-space: pre-wrap;
+}
+
+.miden-chat-message--user .miden-chat-message-content {
+  background: var(--miden-chat-user-bubble);
+  border-bottom-right-radius: 5px;
+}
+
+.miden-chat-message--assistant .miden-chat-message-content {
+  background: #fff;
+  border: 1px solid var(--miden-chat-line);
+  border-bottom-left-radius: 5px;
+}
+
+/* Action card: the whole message becomes one accent-bordered card, and the
+   content text loses its own bubble chrome since the card already provides it. */
+.miden-chat-message--action {
+  max-width: 90%;
+  border: 1px solid var(--miden-chat-accent);
+  background: var(--miden-chat-accent-soft);
+  border-radius: 14px 14px 14px 5px;
+  padding: 13px 14px;
+}
+
+.miden-chat-message--action .miden-chat-message-content {
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 0;
+  margin-bottom: 11px;
+}
+
+.miden-chat-action-eyebrow {
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--miden-chat-accent);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.miden-chat-action-prompt {
+  width: 100%;
+  background: var(--miden-chat-accent);
+  color: #fff;
+  border: none;
+  padding: 9px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.miden-chat-action-prompt:hover {
+  background: var(--miden-chat-accent-hover);
+}
+
+.miden-chat-system-notice {
+  align-self: center;
+  font-size: 11.5px;
+  color: var(--miden-chat-ink-soft);
+  background: #f4f4f3;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+/* ---- Typing indicator ---- */
+
+.miden-chat-typing {
+  display: flex;
+  gap: 4px;
+  width: fit-content;
+  padding: 12px 14px;
+  background: #fff;
+  border: 1px solid var(--miden-chat-line);
+  border-radius: 14px;
+  border-bottom-left-radius: 5px;
+}
+
+.miden-chat-typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--miden-chat-ink-faint);
+  animation: miden-chat-blink 1.3s infinite ease-in-out;
+}
+
+.miden-chat-typing span:nth-child(2) {
+  animation-delay: 0.18s;
+}
+
+.miden-chat-typing span:nth-child(3) {
+  animation-delay: 0.36s;
+}
+
+@keyframes miden-chat-blink {
+  0%,
+  60%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+/* ---- Suggestion chips ---- */
+
+.miden-chat-suggestions {
+  flex: 0 0 auto;
+  padding: 0 18px 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.miden-chat-suggestion-chip {
+  font-size: 12px;
+  padding: 6px 11px;
+  border-radius: 20px;
+  border: 1px solid var(--miden-chat-line-strong);
+  background: #fff;
+  color: var(--miden-chat-ink-soft);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.miden-chat-suggestion-chip:hover {
+  border-color: var(--miden-chat-accent);
+  color: var(--miden-chat-accent);
+  background: var(--miden-chat-accent-soft);
+}
+
+/* ---- Error ---- */
+
+.miden-chat-error {
+  flex: 0 0 auto;
+  padding: 8px 18px;
+  font-size: 12.5px;
+  color: #b3261e;
+}
+
+/* ---- Composer ---- */
+
+.miden-chat-input {
+  flex: 0 0 auto;
+  border-top: 1px solid var(--miden-chat-line);
+  padding: 12px 14px;
+  display: flex;
+  align-items: flex-end;
+  gap: 9px;
+}
+
+.miden-chat-input-field {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 1px solid var(--miden-chat-line-strong);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  resize: none;
+  max-height: 90px;
+  outline: none;
+  line-height: 1.4;
+  transition: border-color 0.15s;
+}
+
+.miden-chat-input-field:focus {
+  border-color: var(--miden-chat-accent);
+}
+
+.miden-chat-input-field::placeholder {
+  color: var(--miden-chat-ink-faint);
+}
+
+.miden-chat-input-send {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--miden-chat-accent);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition:
+    background 0.15s,
+    opacity 0.15s;
+}
+
+.miden-chat-input-send:hover:not(:disabled) {
+  background: var(--miden-chat-accent-hover);
+}
+
+.miden-chat-input-send:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.miden-chat-input-send-icon {
+  width: 17px;
+  height: 17px;
+  stroke: #fff;
+}
+
+/* ---- Floating launcher ---- */
+
+.miden-chat-launcher-bubble {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--miden-chat-accent);
+  border: none;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(232, 99, 42, 0.35);
+  touch-action: none;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.miden-chat-launcher-bubble:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 10px 26px rgba(232, 99, 42, 0.42);
+}
+
+.miden-chat-launcher-bubble:active {
+  transform: scale(0.97);
+}
+
+.miden-chat-launcher-bubble--dragging {
+  cursor: grabbing;
+}
+
+.miden-chat-launcher-bubble--open {
+  display: none;
+}
+
+.miden-chat-launcher-bubble-icon {
+  width: 26px;
+  height: 26px;
+  stroke: #fff;
+}
+
+.miden-chat-launcher-panel {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: min(384px, calc(100vw - 16px));
+  height: min(600px, calc(100vh - 56px));
+  background: var(--miden-chat-bg);
+  border: 1px solid var(--miden-chat-line);
+  border-radius: 20px;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.14),
+    0 4px 12px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(12px) scale(0.98);
+  pointer-events: none;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.miden-chat-launcher-panel--open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+@media (max-width: 440px) {
+  .miden-chat-launcher-panel {
+    width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    bottom: 0;
+    right: 0;
+    border-radius: 0;
+  }
+
+  .miden-chat-launcher-bubble {
+    bottom: 20px;
+    right: 20px;
+  }
+}

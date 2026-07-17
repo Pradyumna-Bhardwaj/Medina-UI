@@ -1,0 +1,55 @@
+{
+  "name": "ai-agent",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "description": "Embeddable chat widget for MidenMultiSig — talks to a single backend endpoint, renders replies, surfaces suggested actions via callback.",
+  "main": "./dist/ai-agent.cjs",
+  "module": "./dist/ai-agent.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/ai-agent.js",
+      "require": "./dist/ai-agent.cjs"
+    },
+    "./styles.css": "./dist/ai-agent.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "workspaces": [
+    "demo"
+  ],
+  "scripts": {
+    "build": "tsc --noEmit && vite build",
+    "dev": "npm run dev --workspace=demo",
+    "demo": "npm run dev --workspace=demo",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p demo/tsconfig.json"
+  },
+  "peerDependencies": {
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/node": "^22.9.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "jsdom": "^25.0.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10",
+    "vite-plugin-dts": "^4.3.0",
+    "vitest": "^2.1.4"
+  }
+}
