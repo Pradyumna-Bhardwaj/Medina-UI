@@ -73,9 +73,14 @@ describe("ChatLauncher", () => {
     expect(bubble).toHaveAttribute("aria-expanded", "false");
   });
 
-  it("persists the dropped position and restores it on remount", () => {
+  it("persists the dropped position and restores it on remount when persistPosition is enabled", () => {
     const { unmount } = render(
-      <ChatLauncher endpoint="https://example.test/messages" fetchFn={mockFetchOk()} positionStorageKey="test-pos" />,
+      <ChatLauncher
+        endpoint="https://example.test/messages"
+        fetchFn={mockFetchOk()}
+        positionStorageKey="test-pos"
+        persistPosition
+      />,
     );
     const bubble = screen.getByRole("button", { name: "Chat" });
 
@@ -87,35 +92,27 @@ describe("ChatLauncher", () => {
 
     unmount();
     render(
-      <ChatLauncher endpoint="https://example.test/messages" fetchFn={mockFetchOk()} positionStorageKey="test-pos" />,
+      <ChatLauncher
+        endpoint="https://example.test/messages"
+        fetchFn={mockFetchOk()}
+        positionStorageKey="test-pos"
+        persistPosition
+      />,
     );
     const restoredBubble = screen.getByRole("button", { name: "Chat" });
     expect(restoredBubble).toHaveStyle({ left: "200px", top: "150px" });
   });
 
-  it("supports controlled open state via the open/onOpenChange props", () => {
-    const onOpenChange = vi.fn();
-    const { rerender } = render(
-      <ChatLauncher
-        endpoint="https://example.test/messages"
-        fetchFn={mockFetchOk()}
-        open={false}
-        onOpenChange={onOpenChange}
-      />,
+  it("does not persist the dropped position when persistPosition is false (the default)", () => {
+    render(
+      <ChatLauncher endpoint="https://example.test/messages" fetchFn={mockFetchOk()} positionStorageKey="test-pos-2" />,
     );
     const bubble = screen.getByRole("button", { name: "Chat" });
-    fireEvent.click(bubble);
-    expect(onOpenChange).toHaveBeenCalledWith(true);
-    expect(bubble).toHaveAttribute("aria-expanded", "false");
 
-    rerender(
-      <ChatLauncher
-        endpoint="https://example.test/messages"
-        fetchFn={mockFetchOk()}
-        open={true}
-        onOpenChange={onOpenChange}
-      />,
-    );
-    expect(screen.getByRole("button", { name: "Chat" })).toHaveAttribute("aria-expanded", "true");
+    firePointer(bubble, "pointerdown", { clientX: 128, clientY: 128 });
+    firePointer(window, "pointermove", { clientX: 228, clientY: 178 });
+    firePointer(window, "pointerup", { clientX: 228, clientY: 178 });
+
+    expect(window.localStorage.getItem("test-pos-2")).toBeNull();
   });
 });

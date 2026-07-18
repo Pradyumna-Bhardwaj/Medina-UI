@@ -90,10 +90,9 @@ Self-contained floating widget: draggable bubble + panel, positions itself, no h
 | `label` | `string` | `"Chat"` | Accessible label for the (icon-only) bubble button. |
 | `className` / `bubbleClassName` / `panelClassName` | `string` | — | Extra classes on the wrapper / bubble / panel. |
 | `positionStorageKey` | `string` | `"miden-chat-widget-position"` | `localStorage` key the dragged position is saved under. |
-| `persistPosition` | `boolean` | `true` | Set `false` to disable remembering the dragged position. |
+| `persistPosition` | `boolean` | `false` | Set `true` to remember the dragged position across visits (writes to `localStorage`). |
 | `zIndex` | `number` | `2147483000` | Override if it clashes with other overlays in your app. |
-| `open` / `onOpenChange` | `boolean` / `(open) => void` | — | Optional controlled open state. Omit to let it manage itself. |
-| `defaultOpen` | `boolean` | `false` | Initial open state in uncontrolled mode. |
+| `defaultOpen` | `boolean` | `false` | Starting open state. There's only one opening pattern for now — click the bubble; a controlled `open`/`onOpenChange` pair may come later if a host needs to trigger it externally. |
 
 ### `ChatWidget` (manual placement)
 

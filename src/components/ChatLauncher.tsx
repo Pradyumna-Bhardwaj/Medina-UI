@@ -25,10 +25,8 @@ export interface ChatLauncherProps extends UseChatSessionOptions {
   /** Set false to disable remembering the dragged position across visits. */
   persistPosition?: boolean;
   zIndex?: number;
-  /** Controlled open state. Omit to let the widget manage it internally. */
-  open?: boolean;
+  /** Starting open state. There's only one opening pattern for now — click the bubble. */
   defaultOpen?: boolean;
-  onOpenChange?: (open: boolean) => void;
 }
 
 const DEFAULT_POSITION_KEY = "miden-chat-widget-position";
@@ -54,16 +52,16 @@ export function ChatLauncher({
   title,
   suggestions,
   positionStorageKey = DEFAULT_POSITION_KEY,
-  persistPosition = true,
+  persistPosition = false,
   zIndex = 2147483000,
-  open: controlledOpen,
   defaultOpen = false,
-  onOpenChange,
   endpoint,
   fetchFn,
 }: ChatLauncherProps) {
-  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
-  const isOpen = controlledOpen ?? uncontrolledOpen;
+  // Only one opening pattern for now: self-managed, click-to-toggle. A
+  // controlled open/onOpenChange pair can be added back later if a host
+  // ever needs to trigger it from outside the bubble.
+  const [isOpen, setIsOpen] = useState(defaultOpen);
 
   const [seedPosition] = useState<DraggablePosition | null>(() =>
     persistPosition ? readPosition(positionStorageKey) : null,
@@ -81,18 +79,10 @@ export function ChatLauncher({
     onDragEnd: handleDragEnd,
   });
 
-  const setOpen = useCallback(
-    (next: boolean) => {
-      if (controlledOpen === undefined) setUncontrolledOpen(next);
-      onOpenChange?.(next);
-    },
-    [controlledOpen, onOpenChange],
-  );
-
   const handleBubbleClick = useCallback(() => {
     if (wasDragged()) return;
-    setOpen(!isOpen);
-  }, [wasDragged, isOpen, setOpen]);
+    setIsOpen((prev) => !prev);
+  }, [wasDragged]);
 
   const panelRef = useRef<HTMLDivElement>(null);
   const [panelStyle, setPanelStyle] = useState<CSSProperties>({});
@@ -164,7 +154,7 @@ export function ChatLauncher({
           onAction={onAction}
           title={title}
           suggestions={suggestions}
-          onClose={() => setOpen(false)}
+          onClose={() => setIsOpen(false)}
         />
       </div>
     </div>
