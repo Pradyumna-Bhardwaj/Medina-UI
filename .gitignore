@@ -12,6 +12,10 @@ coverage/
 .env
 .env.local
 .env.*.local
+.dev.vars
+
+# wrangler
+.wrangler/
 
 # logs
 npm-debug.log*
