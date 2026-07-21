@@ -1,7 +1,7 @@
 export { useChatSession } from "./hooks/useChatSession";
 
 export { ChatLauncher } from "./components/ChatLauncher";
-export type { ChatLauncherProps } from "./components/ChatLauncher";
+export type { ChatLauncherProps, LauncherPosition } from "./components/ChatLauncher";
 
 export { ChatWidget } from "./components/ChatWidget";
 export type { ChatWidgetProps } from "./components/ChatWidget";

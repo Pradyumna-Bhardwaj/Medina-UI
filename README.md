@@ -1,6 +1,6 @@
 # Medina-ai-agent
 
-Embeddable chat widget for **MidenMultiSig** — a floating, draggable chat bubble that talks to a single backend endpoint, renders replies, and surfaces suggested actions back to the host app.
+Embeddable chat widget for **MidenMultiSig** — a floating chat bubble that talks to a single backend endpoint, renders replies, and surfaces suggested actions back to the host app.
 
 > The package is currently named `ai-agent` as a placeholder. Renaming it later is a one-line change in `package.json` — nothing in the code depends on the string.
 
@@ -41,7 +41,7 @@ function App() {
 }
 ```
 
-That's it — `ChatLauncher` renders a self-positioning floating bubble (draggable, remembers where you drop it) that expands into the chat panel. No other wiring required.
+That's it — `ChatLauncher` renders a self-positioning floating bubble (pick a corner with the `position` prop, defaults to bottom-right) that expands into the chat panel. No other wiring required.
 
 ## The backend contract
 
@@ -72,25 +72,24 @@ No auth payload is ever sent — the backend is expected to be IP-whitelisted at
 - If a response comes back with `sessionReset: true`, the widget clears the visible history, shows a small "Started a new conversation" system note, and renders the reply as the first message of the new session.
 - `actionType` is only ever acted on when the user explicitly clicks the action button under a reply — `onAction` never fires automatically just because a message arrived.
 
-The one thing that *does* persist across visits is the floating bubble's dragged position, in `localStorage` (a UI preference, not session data).
+Nothing about the widget's own position persists across visits either — the bubble sits in a fixed corner (see `position` below), not a location a user can move.
 
 ## Components
 
 ### `ChatLauncher` (primary integration)
 
-Self-contained floating widget: draggable bubble + panel, positions itself, no host-side placement code needed.
+Self-contained floating widget: a bubble in a fixed corner that expands into the panel, no host-side placement code needed. The bubble stays visible while the panel is open too — clicking it again closes the panel, same as the header's close button.
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `endpoint` | `string` | — | Full URL to POST messages to. Required. |
 | `fetchFn` | `typeof fetch` | `fetch` | Injectable transport — useful for tests or a custom backend client. |
 | `onAction` | `(actionType, message) => void` | — | Fires only when the user clicks a surfaced action button. |
+| `position` | `"top-left" \| "top-right" \| "bottom-left" \| "bottom-right"` | `"bottom-right"` | Which screen corner the bubble sits in. The panel opens from that same corner (upward from a bottom corner, downward from a top corner) — plain CSS, no drag, no runtime positioning math. |
 | `title` | `string` | `"Assistant"` | Panel header title. |
 | `suggestions` | `string[]` | `[]` | Conversation-starter chips shown before the first message. No defaults — supply your own copy. |
 | `label` | `string` | `"Chat"` | Accessible label for the (icon-only) bubble button. |
 | `className` / `bubbleClassName` / `panelClassName` | `string` | — | Extra classes on the wrapper / bubble / panel. |
-| `positionStorageKey` | `string` | `"miden-chat-widget-position"` | `localStorage` key the dragged position is saved under. |
-| `persistPosition` | `boolean` | `false` | Set `true` to remember the dragged position across visits (writes to `localStorage`). |
 | `zIndex` | `number` | `2147483000` | Override if it clashes with other overlays in your app. |
 | `defaultOpen` | `boolean` | `false` | Starting open state. There's only one opening pattern for now — click the bubble; a controlled `open`/`onOpenChange` pair may come later if a host needs to trigger it externally. |
 
@@ -160,10 +159,8 @@ src/
   index.ts              # public exports
   types.ts               # ActionType, ChatMessage, hook option/result types
   api/                    # postMessage client + ChatApiError
-  storage/                # localStorage position persistence (SSR-safe)
   hooks/
     useChatSession.ts      # session state machine
-    useDraggable.ts         # pointer-based drag/clamp logic for the bubble
   components/              # ChatLauncher, ChatWidget, and all sub-components
   styles/index.css          # the theme
 demo/                     # local dev playground, not published

@@ -372,24 +372,25 @@
   stroke: #fff;
 }
 
-/* ---- Floating launcher ---- */
+/* ---- Floating launcher ----
+   The bubble sits in one of four fixed corners (the `position` prop) rather
+   than being draggable. With a known corner, the panel's placement relative
+   to it is fixed and computable ahead of time — plain per-corner CSS below,
+   no runtime measurement, and no way for it to end up overlapping the bubble. */
 
 .miden-chat-launcher-bubble {
   position: fixed;
-  bottom: 28px;
-  right: 28px;
   width: 56px;
   height: 56px;
   padding: 0;
   border-radius: 50%;
   background: var(--miden-chat-accent);
   border: none;
-  cursor: grab;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 6px 20px rgba(232, 99, 42, 0.35);
-  touch-action: none;
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease;
@@ -404,23 +405,38 @@
   transform: scale(0.97);
 }
 
-.miden-chat-launcher-bubble--dragging {
-  cursor: grabbing;
-}
-
-
 .miden-chat-launcher-bubble-icon {
   width: 26px;
   height: 26px;
   stroke: #fff;
 }
 
-.miden-chat-launcher-panel {
-  position: fixed;
+.miden-chat-launcher-bubble--bottom-right {
   bottom: 28px;
   right: 28px;
+}
+
+.miden-chat-launcher-bubble--bottom-left {
+  bottom: 28px;
+  left: 28px;
+}
+
+.miden-chat-launcher-bubble--top-right {
+  top: 28px;
+  right: 28px;
+}
+
+.miden-chat-launcher-bubble--top-left {
+  top: 28px;
+  left: 28px;
+}
+
+.miden-chat-launcher-panel {
+  position: fixed;
   width: min(384px, calc(100vw - 16px));
-  height: min(600px, calc(100vh - 56px));
+  /* 28px corner inset + 56px bubble + 8px gap = 92px reserved for the bubble
+     on the side the panel opens from, plus an 8px margin on the far side. */
+  height: min(600px, calc(100vh - 100px));
   background: var(--miden-chat-bg);
   border: 1px solid var(--miden-chat-line);
   border-radius: 20px;
@@ -430,18 +446,51 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  /* Which way the panel slides in as it opens — down toward the bubble when
+     closed, so it reads as growing out of it. Set once here, overridden per
+     position below via a custom property (not `transform` itself), so the
+     --open rule's transform doesn't depend on cascade/source order to win. */
+  --miden-chat-panel-closed-offset: 12px;
   opacity: 0;
-  transform: translateY(12px) scale(0.98);
+  scale: 0.98;
+  transform: translateY(var(--miden-chat-panel-closed-offset));
   pointer-events: none;
   transition:
     opacity 0.2s ease,
-    transform 0.2s ease;
+    transform 0.2s ease,
+    scale 0.2s ease;
 }
 
 .miden-chat-launcher-panel--open {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translateY(0);
+  scale: 1;
   pointer-events: auto;
+}
+
+/* Bottom-anchored bubble: panel opens upward, above it. */
+.miden-chat-launcher-panel--bottom-right {
+  bottom: 92px;
+  right: 28px;
+}
+
+.miden-chat-launcher-panel--bottom-left {
+  bottom: 92px;
+  left: 28px;
+}
+
+/* Top-anchored bubble: panel opens downward, below it — slides down into
+   place instead of up, since it's growing from a bubble above it now. */
+.miden-chat-launcher-panel--top-right {
+  top: 92px;
+  right: 28px;
+  --miden-chat-panel-closed-offset: -12px;
+}
+
+.miden-chat-launcher-panel--top-left {
+  top: 92px;
+  left: 28px;
+  --miden-chat-panel-closed-offset: -12px;
 }
 
 @media (max-width: 440px) {
@@ -449,13 +498,28 @@
     width: 100vw;
     height: 100vh;
     max-height: 100vh;
-    bottom: 0;
-    right: 0;
+    inset: 0;
     border-radius: 0;
+    transform: none;
   }
 
-  .miden-chat-launcher-bubble {
+  .miden-chat-launcher-bubble--bottom-right,
+  .miden-chat-launcher-bubble--bottom-left {
     bottom: 20px;
+  }
+
+  .miden-chat-launcher-bubble--top-right,
+  .miden-chat-launcher-bubble--top-left {
+    top: 20px;
+  }
+
+  .miden-chat-launcher-bubble--bottom-right,
+  .miden-chat-launcher-bubble--top-right {
     right: 20px;
+  }
+
+  .miden-chat-launcher-bubble--bottom-left,
+  .miden-chat-launcher-bubble--top-left {
+    left: 20px;
   }
 }
